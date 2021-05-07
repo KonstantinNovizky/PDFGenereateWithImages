@@ -1,6 +1,40 @@
+<?php
+
+if(!isset($_SESSION)) {
+    // session isn't started
+    session_start();
+}
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "test";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+} 
+
+
+$offSetNumber = 0;
+
+if(isset($_SESSION['offSetNumber']))
+{
+    $offSetNumber = $_SESSION['offSetNumber'];
+}
+
+
+$sql = "SELECT * FROM cma_props WHERE propid='214' LIMIT 7 OFFSET " . $offSetNumber ;
+$result = $conn->query($sql);
+
+$conn->close();
+
+?>
+
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -34,12 +68,11 @@
 
     <link rel="stylesheet" href="public/css/custome.css">
 </head>
-
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
     <aside class="main-sidebar">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link">
+        <a href="javascript:void(0);" class="brand-link">
             <img src="public/images/Vieva Logo pro.png" alt="Vieva Logo" class="brand-image img-circle elevation-3">
             <span class="">Dashboard</span>
         </a>
@@ -47,18 +80,60 @@
     </aside>
     <div class="content-wrapper tab-content" id="custom-content-below-tabContent">
 
-        <section class="content tab-pane fade show active" id="custom-content-below-general" role="tabpanel"
+        <section class="content tab-pane fade show active" role="tabpanel"
                  aria-labelledby="custom-content-below-general-tab">
 
             <h4 class="pt-pb">Generate PDF</h4>
-            <button class="btn btn-info btn-generate-pdf" onclick="generatePDF(this, 'general_tab_view_chart')">
-                Generate
-                PDF
-            </button>
-            <div class="container-fluid general_tab_view chart_view mt-5" id="general_tab_view_chart" style="width: 80%;padding: auto">
-                <div id="image-view"></div>
-            </div>
+            <button class="btn btn-info btn-generate-pdf" onclick="generatePDF(this, 'generate_pdf')"> Generate PDF</button>
+            <div class="container-fluid general_tab_view chart_view mt-5" id="generate_pdf" style="width: 80%;padding: auto">
 
+                <?php
+                    if ($result->num_rows > 0) {
+
+                        $displayHtml = "";
+                        while($row = $result->fetch_assoc()) {
+                            $displayHtml .= '<div>';
+                            $displayHtml .= '<div class="card-header">';
+                            $displayHtml .= '<h3>Delivery Line: ' . $row["deliveryLine"] . '</h3>';
+                            $displayHtml .= '<h3>City: ' . $row["city"] . ', Zip: ' . $row["zip"] . '</h3>';
+                            $displayHtml .= '<h5>Street: ' . $row["street"] . ' (Latitude: ' . $row["latitude"] . ', Longitude: ' . $row["longitude"] . ')</h5>';
+                            $displayHtml .= '</div>';
+                            $displayHtml .= '<div class="card-body">';
+                            $displayHtml .= '<p>Sale Price: ' . $row["salePrice"] . ', Sale Date: ' . $row["saleDate"] . '</p>';
+
+                            $record = json_decode($row["prop_json"]);
+
+                            try {
+                                if(count($record->result->listings) > 0) {
+                                    $images = $record->result->listings["0"]->images;
+
+                                    if(is_array($images)) {
+                                        $displayHtml .= '<div class="row">';
+                                        for($i = 0;$i<count($images);$i++) {
+
+                                            $displayHtml .= '<div class="col-sm-1">';
+                                            $displayHtml .= '<img class="img-thumbnail" src="' . $images[$i] . '" crossOrigin="Anonymous">';
+                                            $displayHtml .= '</div>';
+                                        }
+                                        $displayHtml .= '</div>';
+                                    }
+
+                                }
+
+                            } catch (Exception $e) {
+
+                            }
+
+
+                            $displayHtml .= '</div>';
+                            $displayHtml .= '</div>';
+                        }
+                        echo $displayHtml;
+                    } else {
+                        echo '<h1>Empty Records</h1>';
+                    }
+                ?>
+            </div>
 
         </section>
         <!--Per client -->
@@ -122,30 +197,6 @@
         $('.select2').select2();
         $('.reservation').daterangepicker()
     });
-
-    var jsonObj = JSON.parse(responseData);
-    var imagesHtml = "";
-    imagesHtml += '<h3 class="mb-2">ID: ' + jsonObj.result.listings[0].id + '</h3>';
-    imagesHtml += '<h3 class="mb-2>Market ' + jsonObj.result.listings[0].market + '</h3>';
-    imagesHtml += '<div class="pl-5 mb-2">Delivery Line: ' + jsonObj.result.listings[0].address.deliveryLine
-        + ', City: ' + jsonObj.result.listings[0].address.city
-        +', Street: ' + jsonObj.result.listings[0].address.street
-        + '</div>';
-
-    imagesHtml += '<h3 class="mb-2">Area: ' + jsonObj.result.listings[0].area + '</h3>';
-    imagesHtml += '<h3 class="mb-2">Coordinates: ( latitude: ' + jsonObj.result.listings[0].coordinates.latitude + ', longitude: ' + jsonObj.result.listings[0].coordinates.longitude + ')</h3>';
-    imagesHtml += '<p class="mb-2 pl-3" title="Description">' + jsonObj.result.listings[0].description + '</p>';
-    imagesHtml += '<h3 class="mb-2">Property Type: ' + jsonObj.result.listings[0].propertyType + '</h3>';
-    imagesHtml += '<h1>...</h1>';
-    imagesHtml += '<div class="ml-4 pl-4"><h3>Include Images</h3>';
-    for(var i = 0; i<jsonObj.result.listings[0].images.length; i++) {
-        imagesHtml += '<p>image ' + i + '</p>';
-        imagesHtml += '<img alt="downloadImage" src="' + jsonObj.result.listings[0].images[i] + '">';
-        imagesHtml += '<br>'
-    }
-
-    imagesHtml += '</div>';
-    $("#image-view").html(imagesHtml);
 
 </script>
 

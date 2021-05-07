@@ -79,13 +79,17 @@ var responseData = '{\n' +
     '            "style":"Ranch",\n' +
     '            "yearBuilt":1952,\n' +
     '            "images":[\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg",\n' +
-    '                "https://www.tutorialspoint.com/tensorflow/images/tensorflow.jpg"]\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_1.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_2.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_3.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_4.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_5.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_6.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_7.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_8.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_9.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_10.jpg",\n' +
+    '                "https://listing-images.homejunction.com/crmls/495820907/photo_11.jpg"]\n' +
     '        }],\n' +
     '        "paging":{\n' +
     '           "count":1,\n' +
